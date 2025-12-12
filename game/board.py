@@ -20,6 +20,14 @@ class Board:
         self.move_history.append((row, col, player))
         return True
     
+    def undo_move(self) -> Optional[Tuple[int, int, int]]:
+        if not self.move_history:
+            return None
+        
+        row, col, player = self.move_history.pop()
+        self.grid[row][col] = 0
+        return (row, col, player)
+    
     def is_valid_move(self, row: int, col: int) -> bool:
         return 0 <= row < self.size and 0 <= col < self.size and self.grid[row][col] == 0
     
@@ -31,9 +39,26 @@ class Board:
                     moves.append((row, col))
         return moves
     
+    def get_adjacent_moves(self, distance: int = 2) -> List[Tuple[int, int]]:
+        # Return the center of the board if it's empty
+        if np.sum(self.grid) == 0: 
+            center = self.size // 2
+            return [(center, center)]
+        
+        candidates = set()
+        for row in range(self.size):
+            for col in range(self.size):
+                if self.grid[row][col] != 0:
+                    for dr in range(-distance, distance + 1):
+                        for dc in range(-distance, distance + 1):
+                            new_row, new_col = row + dr, col + dc
+                            if self.is_valid_move(new_row, new_col):
+                                candidates.add((new_row, new_col))
+        
+        return list(candidates)
+    
     def check_winner(self, row: int, col: int, player: int) -> bool:
-        # Check all 4 directions: horizontal, vertical, diagonal1 (\), diagonal2 (/)
-        directions = [ (0, 1), (1, 0), (1, 1), (1, -1) ]
+        directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
         
         for dr, dc in directions:
             count = 1 
@@ -58,14 +83,10 @@ class Board:
     def is_full(self) -> bool:
         return np.all(self.grid != 0)
     
-    def get_state(self) -> np.ndarray:
-        return self.grid.copy()
-    
     def __str__(self) -> str:
         symbols = {0: '.', 1: 'X', 2: 'O'}
         lines = []
         
-        # Column numbers
         header = "   " + " ".join(f"{i:2d}" for i in range(self.size))
         lines.append(header)
         

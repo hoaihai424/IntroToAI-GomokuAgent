@@ -1,4 +1,3 @@
-from typing import Optional, Tuple
 from game.board import Board
 
 class Game:
@@ -83,12 +82,3 @@ class Game:
                 print(f"Draw by move limit ({max_moves} moves)")
         
         return self.winner
-    
-    def get_state(self) -> Tuple[Board, int]:
-        return self.board, self.current_player
-    
-    def reset(self):
-        self.board = Board(self.board.size)
-        self.current_player = 1
-        self.winner = None
-        self.move_count = 0
