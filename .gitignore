@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+.idea/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+
+# macOS system files
+.DS_Store
+
+# Pytest cache
+.pytest_cache/
+
+# Testing environments
+testing.ipynb
+
+# Data and model files
+data/
+checkpoints/
+
